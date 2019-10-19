@@ -1,3 +1,10 @@
+" Copyright (c) 2017 Junegunn Choi
+"
+" MIT License
+"
+" Permission is hereby granted, free of charge, to any person obtaining
+" a copy of this software and associated documentation files (the
+" "Software"), to deal in the Software without restriction, including
 " without limitation the rights to use, copy, modify, merge, publish,
 " distribute, sublicense, and/or sell copies of the Software, and to
 " permit persons to whom the Software is furnished to do so, subject to
@@ -970,6 +977,22 @@ function! fzf#vim#functions(...)
 endfunction
 
 " ------------------------------------------------------------------
+" Abbreviates
+" ------------------------------------------------------------------
+
+function! fzf#vim#abbreviates(...)
+  redir => cout
+  silent abbreviate
+  redir END
+  let list = split(cout, "\n")
+  return s:fzf('functions', {
+        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_func(v:val)')), s:excmds()),
+        \ 'sink*':   s:function('s:command_sink'),
+        \ 'options': '--ansi --expect '.get(g:, 'fzf_commands_expect', 'ctrl-x').
+        \            ' --tiebreak=index --header-lines 1 -x --prompt "Abbreviates> " -n2,3,2..3 -d'.s:nbs}, a:000)
+endfunction
+
+" ------------------------------------------------------------------
 " Autocmds
 " ------------------------------------------------------------------
 
@@ -982,7 +1005,7 @@ function! fzf#vim#autocmds(...)
         \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_func(v:val)')), s:excmds()),
         \ 'sink*':   s:function('s:command_sink'),
         \ 'options': '--ansi --expect '.get(g:, 'fzf_commands_expect', 'ctrl-x').
-        \            ' --tiebreak=index --header-lines 1 -x --prompt "Autocmd> " -n2,3,2..3 -d'.s:nbs}, a:000)
+        \            ' --tiebreak=index --header-lines 1 -x --prompt "Autocmds> " -n2,3,2..3 -d'.s:nbs}, a:000)
 endfunction
 
 " ------------------------------------------------------------------
@@ -998,7 +1021,7 @@ function! fzf#vim#highlights(...)
         \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_func(v:val)')), s:excmds()),
         \ 'sink*':   s:function('s:command_sink'),
         \ 'options': '--ansi --expect '.get(g:, 'fzf_commands_expect', 'ctrl-x').
-        \            ' --tiebreak=index --header-lines 1 -x --prompt "Highlight> " -n2,3,2..3 -d'.s:nbs}, a:000)
+        \            ' --tiebreak=index --header-lines 1 -x --prompt "Highlights> " -n2,3,2..3 -d'.s:nbs}, a:000)
 endfunction
 "}}} End of verbose commands
 
