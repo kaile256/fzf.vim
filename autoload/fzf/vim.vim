@@ -880,6 +880,19 @@ function! fzf#vim#snippets(...)
   \ 'sink':    s:function('s:inject_snippet')}, a:000)
 endfunction
 
+" Toggle-able with Path <-> Contents {{{
+" TODO: enable toggle path and contents.
+" TODO: make a s:function as a struct.
+" TODO: get :messages like tpope/vim-scriptease
+let s:verbose_commands = [
+            \ 'functions',
+            \ 'highlight',
+            \ 'autocmd',
+            \ 'command',
+            \ 'map',
+            \ 'abbreviate'
+            \ ]
+
 " ------------------------------------------------------------------
 " Commands
 " ------------------------------------------------------------------
@@ -951,11 +964,6 @@ endfunction
 " Functions
 " ------------------------------------------------------------------
 
-function! s:format_func(line)
-  return substitute(a:line, '\C \([A-Z]\S*\) ',
-        \ '\=s:nbs.s:yellow(submatch(1), "Function").s:nbs', '')
-endfunction
-
 function! fzf#vim#functions(...)
   redir => cout
   silent function
@@ -966,6 +974,55 @@ function! fzf#vim#functions(...)
         \ 'sink*':   s:function('s:command_sink'),
         \ 'options': '--ansi --expect '.get(g:, 'fzf_commands_expect', 'ctrl-x').
         \            ' --tiebreak=index --header-lines 1 -x --prompt "Functions> " -n2,3,2..3 -d'.s:nbs}, a:000)
+endfunction
+
+" ------------------------------------------------------------------
+" Autocmds
+" ------------------------------------------------------------------
+
+function! fzf#vim#autocmds(...)
+  redir => cout
+  silent autocmd
+  redir END
+  let list = split(cout, "\n")
+  return s:fzf('functions', {
+        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_func(v:val)')), s:excmds()),
+        \ 'sink*':   s:function('s:command_sink'),
+        \ 'options': '--ansi --expect '.get(g:, 'fzf_commands_expect', 'ctrl-x').
+        \            ' --tiebreak=index --header-lines 1 -x --prompt "Autocmd> " -n2,3,2..3 -d'.s:nbs}, a:000)
+endfunction
+
+" ------------------------------------------------------------------
+" Highlights
+" ------------------------------------------------------------------
+
+function! fzf#vim#highlights(...)
+  redir => cout
+  silent highlight
+  redir END
+  let list = split(cout, "\n")
+  return s:fzf('functions', {
+        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_func(v:val)')), s:excmds()),
+        \ 'sink*':   s:function('s:command_sink'),
+        \ 'options': '--ansi --expect '.get(g:, 'fzf_commands_expect', 'ctrl-x').
+        \            ' --tiebreak=index --header-lines 1 -x --prompt "Highlight> " -n2,3,2..3 -d'.s:nbs}, a:000)
+endfunction
+"}}} End of verbose commands
+
+" ------------------------------------------------------------------
+" Options
+" ------------------------------------------------------------------
+
+function! fzf#vim#options(...)
+  redir => cout
+  silent options
+  redir END
+  let list = split(cout, "\n")
+  return s:fzf('functions', {
+        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_func(v:val)')), s:excmds()),
+        \ 'sink*':   s:function('s:command_sink'),
+        \ 'options': '--ansi --expect '.get(g:, 'fzf_commands_expect', 'ctrl-x').
+        \            ' --tiebreak=index --header-lines 1 -x --prompt "Options> " -n2,3,2..3 -d'.s:nbs}, a:000)
 endfunction
 
 " ------------------------------------------------------------------
