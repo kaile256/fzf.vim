@@ -970,7 +970,7 @@ function! fzf#vim#functions(...)
   redir END
   let list = split(cout, "\n")
   return s:fzf('functions', {
-        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_func(v:val)')), s:excmds()),
+        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_cmd(v:val)')), s:excmds()),
         \ 'sink*':   s:function('s:command_sink'),
         \ 'options': '--ansi --expect '.get(g:, 'fzf_commands_expect', 'ctrl-x').
         \            ' --tiebreak=index --header-lines 1 -x --prompt "Functions> " -n2,3,2..3 -d'.s:nbs}, a:000)
@@ -986,7 +986,7 @@ function! fzf#vim#abbreviates(...)
   redir END
   let list = split(cout, "\n")
   return s:fzf('functions', {
-        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_func(v:val)')), s:excmds()),
+        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_cmd(v:val)')), s:excmds()),
         \ 'sink*':   s:function('s:command_sink'),
         \ 'options': '--ansi --expect '.get(g:, 'fzf_commands_expect', 'ctrl-x').
         \            ' --tiebreak=index --header-lines 1 -x --prompt "Abbreviates> " -n2,3,2..3 -d'.s:nbs}, a:000)
@@ -1002,7 +1002,7 @@ function! fzf#vim#autocmds(...)
   redir END
   let list = split(cout, "\n")
   return s:fzf('functions', {
-        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_func(v:val)')), s:excmds()),
+        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_cmd(v:val)')), s:excmds()),
         \ 'sink*':   s:function('s:command_sink'),
         \ 'options': '--ansi --expect '.get(g:, 'fzf_commands_expect', 'ctrl-x').
         \            ' --tiebreak=index --header-lines 1 -x --prompt "Autocmds> " -n2,3,2..3 -d'.s:nbs}, a:000)
@@ -1018,7 +1018,7 @@ function! fzf#vim#highlights(...)
   redir END
   let list = split(cout, "\n")
   return s:fzf('functions', {
-        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_func(v:val)')), s:excmds()),
+        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_cmd(v:val)')), s:excmds()),
         \ 'sink*':   s:function('s:command_sink'),
         \ 'options': '--ansi --expect '.get(g:, 'fzf_commands_expect', 'ctrl-x').
         \            ' --tiebreak=index --header-lines 1 -x --prompt "Highlights> " -n2,3,2..3 -d'.s:nbs}, a:000)
@@ -1035,7 +1035,7 @@ function! fzf#vim#options(...)
   redir END
   let list = split(cout, "\n")
   return s:fzf('functions', {
-        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_func(v:val)')), s:excmds()),
+        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_cmd(v:val)')), s:excmds()),
         \ 'sink*':   s:function('s:command_sink'),
         \ 'options': '--ansi --expect '.get(g:, 'fzf_commands_expect', 'ctrl-x').
         \            ' --tiebreak=index --header-lines 1 -x --prompt "Options> " -n2,3,2..3 -d'.s:nbs}, a:000)
