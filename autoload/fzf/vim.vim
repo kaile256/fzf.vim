@@ -964,13 +964,42 @@ endfunction
 " Functions
 " ------------------------------------------------------------------
 
-function! fzf#vim#functions(...)
+function! s:help_index(txt) abort
+  let help = globpath($VIMRUNTIME, 'doc/'. a:txt)
+  if empty(help)
+    return []
+  endif
+
+  let commands = []
+  let command = ''
+  for line in readfile(help)
+    if line =~ '^|:[^|]'
+      if !empty(command)
+        call add(commands, s:format_excmd(command))
+      endif
+      let command = line
+
+    elseif line =~ '^\s\+\S' && !empty(command)
+      " '^\s\+\S' picks out all the indented lines.
+      let command .= substitute(line, '^\s*', ' ', '')
+    elseif !empty(commands) && line =~ '^\s*$'
+      " '^\s*$' indicates the end of description for subject.
+      break
+    endif
+  endfor
+  if !empty(command)
+    call add(commands, s:format_excmd(command))
+  endif
+  return commands
+endfunction
+
+function! fzf#vim#functions(...) abort
   redir => cout
-  silent function
+  silent verbose function
   redir END
-  let list = split(cout, "\n")
+  let list = split(cout, "\n\s*function")
   return s:fzf('functions', {
-        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_cmd(v:val)')), s:excmds()),
+        \ 'source':  extend(extend(list[0:0], map(list[1:], 's:format_cmd(v:val)')), s:help_index('usr_41.txt')),
         \ 'sink*':   s:function('s:command_sink'),
         \ 'options': '--ansi --expect '.get(g:, 'fzf_commands_expect', 'ctrl-x').
         \            ' --tiebreak=index --header-lines 1 -x --prompt "Functions> " -n2,3,2..3 -d'.s:nbs}, a:000)
